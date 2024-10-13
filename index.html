@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch and Redirect</title>
+</head>
+<body>
+    <h1>Отправка запроса и переход на другой сайт</h1>
+    <pre id="response"></pre>
+
+    <script>
+        // Функция для получения IP-адреса и отправки запроса
+        function sendRequestAndRedirect() {
+            // Получение реального IP-адреса пользователя
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    const userIp = data.ip;
+                    console.log("User IP:", userIp);
+
+                    // Отправка запроса на Google Apps Script
+                    return fetch('https://script.google.com/macros/s/AKfycbx6o0MWIuwOvpbE6mrPTbb2PYkjcj53XklHGPYM3Qbm6KUcnO6s-2eWBZQoZUSr3N0/exec', {
+                        method: 'POST',
+                        body: JSON.stringify({ ip: userIp }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    document.getElementById("response").textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Ошибка:', error));
+
+            // Переход на другой сайт немедленно
+            window.location.href = 'https://xuilan.github.io/work/';
+        }
+
+        // Выполнение функции
+        sendRequestAndRedirect();
+    </script>
+</body>
+</html>
